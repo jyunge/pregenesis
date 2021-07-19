@@ -1,4 +1,4 @@
-# Pre-genesis stage: Observation framework using polar-orbiting satellites
+# Pre-genesis stage observation framework using polar-orbiting satellites
 
 Author: Jimmy Yunge (University of Miami RSMAS)
 
@@ -86,8 +86,14 @@ Path variables (all type `str`):
 > 
 > where * are SHIPS, track (NetCDF), DAT files, etc.
 
-[Figure 1.1.]
+---
 
+<img src="https://github.com/jyunge/pregenesis/blob/a496cdbe4b0036b2c0bbf61ff97c584a72941894/img/readme/mirs_input_structure.png" alt="alt text" width="640">
+
+**Figure 1.1.**
+
+---
+  
 > :warning: &nbsp; **IMPORTANT:** The program will output data in a similar structure inside a directory specified by a user (Figure 1.2). For example, if `path_to_output = '/home/<user>/.../output/'`, the program will output all pixel files to
 > 
 > `/home/<user>/.../output/<satellite>/<year>/<dev>/<invest>/*.nc`
@@ -107,8 +113,14 @@ Path variables (all type `str`):
 > ...
 > ```
 > (note that the satellite is _not_ included in the pixel file name, by choice).
+  
+---
 
-[Figure 1.2.]
+<img src="https://github.com/jyunge/pregenesis/blob/a496cdbe4b0036b2c0bbf61ff97c584a72941894/img/readme/mirs_output_structure.png" alt="alt text" width="640">
+
+**Figure 1.2.**
+
+---
 
 Run variables:
 - `sat_opt`: Integer specifying which satellite to be run (see code for input options).
@@ -200,7 +212,15 @@ If the storm center is too close to the "near" edge (Edge 1; Fig. 1.3), then we 
 
 Since the HDF files do not have the variable `ScanTime_UTC` (or any other time variables), it is much more difficult to determine the extent of overlap between swaths. We have found that the swath start and end times in the file name of NetCDF files do not match with the first and last values of `ScanTime_UTC`, so creating our own interpolated time variable would not guarantee that all overlapping data will be correctly identified. For future work, another method that, for example, checks for equality of values in rows of other data arrays (temperature, water vapor, etc.), could be implemented.
 
-[Figures 1.3, 1.4.]
+---
+
+<img src="https://github.com/jyunge/pregenesis/blob/dea65c3a52cc1d5b90296cb8c445c69f90b10694/img/readme/mirs_overlap.png" alt="alt text" width="320">
+
+**Figure 1.3.** _The shaded portions of the "arrays" indicate non-truncated, unique data. Colors themselves do not symbolize anything. Note: Diagram not to scale. Overlapping portion of swath exaggerated in size._
+
+<img src="https://github.com/jyunge/pregenesis/blob/dea65c3a52cc1d5b90296cb8c445c69f90b10694/img/readme/mirs_concat.png" alt="alt text" width="320">
+
+**Figure 1.4.** _(Following Fig. 1.3.) Concatenated arrays for (left) "near" edge and (right) "far" edge. Red "x" denotes an example storm center for cases that require concatenation. Dashed lines indicate the subsetted region of data to be exported to the pixel file. Arrow indicates direction of satellite motion._
 
 ---
 
@@ -208,13 +228,10 @@ Since the HDF files do not have the variable `ScanTime_UTC` (or any other time v
 A short script that shows how to do further subsetting of pixel files after running the main code, for example, to partition the pixel files into those with complete data 3 radial degrees around the storm center.
 
 ### References and useful links
-NOAA/OSPO website on the Operational Microwave Integrated Retrieval System, general overview: https://www.ospo.noaa.gov/Products/atmosphere/mirs/index.html
-
-NOAA/STAR MIRS page with instrument details, algorithm description: https://www.star.nesdis.noaa.gov/mirs/index.php
-
-NESDIS/STAR/JPSS website on MIRS with detailed documentation: https://www.star.nesdis.noaa.gov/jpss/mirs.php
-
-NCEI page for dataset: https://doi.org/10.7289/V5X34VH3
+- NOAA/OSPO website on the Operational Microwave Integrated Retrieval System, general overview: https://www.ospo.noaa.gov/Products/atmosphere/mirs/index.html
+- NOAA/STAR MIRS page with instrument details, algorithm description: https://www.star.nesdis.noaa.gov/mirs/index.php
+- NESDIS/STAR/JPSS website on MIRS with detailed documentation: https://www.star.nesdis.noaa.gov/jpss/mirs.php
+- NCEI page for dataset: https://doi.org/10.7289/V5X34VH3
 
 ---
 
@@ -317,15 +334,19 @@ The workflow/philosophy is nearly identical to that for MIRS (`runmirs.py`), i.e
 ## Appendix
 
 ### IDL0 coordinates
+Several storms in the Eastern and Central Pacific (and SW Pacific?) basins cross the international date line (IDL), which has longitude -180W and 180E simultaneously (Figure A.1) and acts as the "periodic" boundary on the longitude-latitude plane. To avoid/solve complications arising from the discontinuity in longitude, all Invests not in the Atlantic use a simple 180 degree shift in coordinates in which longitude is zero at the IDL (Figure A.2). The new coordinate system is denoted "IDL0" coordinates. An example for Hurricane Genevieve (2014) is given in Figure A.3. The coordinates are then reverted back to normal to be saved in the pixel files.
 
-### Pressure levels
+Some Atlantic disturbances originate before the prime meridian, which is discontinuous in the IDL0 coordinates, so IDL0 coordinates are not the default for all basins.
 
+<img src="https://github.com/jyunge/pregenesis/blob/e7f2a23cd5c157d3a7561192c34987c8f469347b/img/readme/world_gm0.jpg" alt="alt text">
 
+**Figure A.1.** _Standard coordinates._
 
+<img src="https://github.com/jyunge/pregenesis/blob/e7f2a23cd5c157d3a7561192c34987c8f469347b/img/readme/world_idl0.png" alt="alt text">
 
+**Figure A.2.** _"IDL0" coordinates. Note longitude values on x-axis (compare with Fig. A.1)._
 
+<img src="https://github.com/jyunge/pregenesis/blob/e7f2a23cd5c157d3a7561192c34987c8f469347b/img/readme/genevieve.png" alt="alt text">
 
-
-
-
+**Figure A.3.**
 
